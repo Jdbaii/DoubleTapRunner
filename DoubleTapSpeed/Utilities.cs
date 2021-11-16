@@ -17,9 +17,10 @@ namespace DoubleTapRunner
             VRCInputManager.Method_Public_Static_Boolean_EnumNPublicSealedvaUnCoHeToTaThShPeVoUnique_0(
                 VRCInputManager.EnumNPublicSealedvaUnCoHeToTaThShPeVoUnique.StreamerModeEnabled);
 
-        public static bool AxisClicked(string axis, ref float previous, float threshold)
+        public static bool AxisClicked(string axis, string oculusAxis, ref float previous, float threshold)
         {
             float current = Mathf.Abs(Input.GetAxis(axis));
+            if (current == 0f) current = Mathf.Abs(Input.GetAxis(oculusAxis));
             bool clicked = current >= threshold && previous < threshold;
 
             previous = current;
@@ -43,7 +44,11 @@ namespace DoubleTapRunner
             lastTimeClicked = Time.time;
             return false;
         }
-
+        
+        public static VRCPlayer GetLocalVRCPlayer()
+        {
+            return VRCPlayer.field_Internal_Static_VRCPlayer_0;
+        }
     }
 
 }

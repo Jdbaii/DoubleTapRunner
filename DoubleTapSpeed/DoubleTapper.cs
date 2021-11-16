@@ -76,7 +76,7 @@ namespace DoubleTapRunner
                                  };
 
             settingsCategory = MelonPreferences.CreateCategory("DoubleTapRunner", "Double-Tap Runner");
-            settingsCategory.CreateEntry( nameof(Settings.Enabled), activeSettings.Enabled, "Enabled");
+            settingsCategory.CreateEntry(nameof(Settings.Enabled), activeSettings.Enabled, "Double-Tap Run Enabled");
             settingsCategory.CreateEntry(nameof(Settings.SpeedMultiplier), activeSettings.SpeedMultiplier, "Speed Multiplier");
             settingsCategory.CreateEntry( nameof(Settings.DoubleClickTime), activeSettings.DoubleClickTime, "Double Click Time");
 
@@ -110,6 +110,8 @@ namespace DoubleTapRunner
 
             if (!modLoadedCorrectly)
                 MelonLogger.Error("Didn't load in correctly, not guaranteed to fully work so i'll shutdown this mod");
+            else
+                MelonLogger.Msg("Initialized!");
         }
 
         private static bool LeftRoomPrefix()
@@ -166,12 +168,15 @@ namespace DoubleTapRunner
                 if (!currentlyRunning)
                 {
                     // Clicked
-                    if (!Utilities.AxisClicked("Vertical", ref previousAxis, activeSettings.AxisClickThreshold)) return;
+                    if (!Utilities.AxisClicked("Vertical", "Oculus_CrossPlatform_SecondaryThumbstickVertical", ref previousAxis, activeSettings.AxisClickThreshold)) return;
 
                     // Woow, someone double clicked with a (VR)CONTROLLER!!! ╰(*°▽°*)╯
                     if (Time.time - lastTimeClicked <= activeSettings.DoubleClickTime)
                     {
                         currentlyRunning = true;
+#if DEBUG
+                        MelonLogger.Msg("Running enabled.");
+#endif
                         SetLocomotion();
                         lastTimeClicked = activeSettings.DoubleClickTime * 4f;
                     }
@@ -184,8 +189,14 @@ namespace DoubleTapRunner
                 // maybe we should stop?
                 else
                 {
-                    if (Mathf.Abs(Input.GetAxis("Vertical") + Input.GetAxis("Horizontal")) <= activeSettings.AxisDeadZone) return;
+                    if (Mathf.Abs(Input.GetAxis("Vertical")) +
+                        +Mathf.Abs(Input.GetAxis("Horizontal")) +
+                        +Mathf.Abs(Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickVertical")) +
+                        +Mathf.Abs(Input.GetAxis("Oculus_CrossPlatform_SecondaryThumbstickHorizontal")) > activeSettings.AxisDeadZone) return;
                     currentlyRunning = false;
+#if DEBUG
+                    MelonLogger.Msg("Running disabled.");
+#endif
                     SetLocomotion();
                 }
             }
@@ -198,6 +209,9 @@ namespace DoubleTapRunner
                     && Utilities.HasDoubleClicked(activeSettings.Forward, ref lastTimeClicked, activeSettings.DoubleClickTime))
                 {
                     currentlyRunning = true;
+#if DEBUG
+                    MelonLogger.Msg("Running enaBled.");
+#endif
                     SetLocomotion();
                 }
 
@@ -209,6 +223,9 @@ namespace DoubleTapRunner
                          && !Input.GetKey(activeSettings.Right))
                 {
                     currentlyRunning = false;
+#if DEBUG
+                    MelonLogger.Msg("Running disabled.");
+#endif
                     SetLocomotion();
                 }
             }
@@ -269,6 +286,10 @@ namespace DoubleTapRunner
             if (!grabbedWorldSettings) return;
 
             float multiplier = activeSettings.Enabled && currentlyRunning ? activeSettings.SpeedMultiplier : 1f;
+
+#if DEBUG
+            MelonLogger.Msg("Setting speed to " + multiplier.ToString("0.00"));
+#endif
             localPlayerApi.SetWalkSpeed(walkSpeed * multiplier);
             localPlayerApi.SetRunSpeed(runSpeed * multiplier);
             localPlayerApi.SetStrafeSpeed(strafeSpeed * multiplier);
