@@ -10,7 +10,7 @@ namespace DoubleTapRunner
 
         public const string DownloadLink = "https://github.com/Jdbye/DoubleTapRunner/releases/download/" + Version+"/DoubleTapRunner.dll";
 
-        public const string Name = "Double-Tap Runner";
+        public const string Name = "Double-Tap Runner Remastered";
 
         public const string Version = "1.5.0";
 
