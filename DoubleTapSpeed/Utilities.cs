@@ -14,8 +14,7 @@ namespace DoubleTapRunner
     public static class Utilities
     {
         public static bool GetStreamerMode =>
-            VRCInputManager.Method_Public_Static_Boolean_InputSetting_0(
-                VRCInputManager.InputSetting.StreamerModeEnabled);
+            VRCInputManager.Method_Public_Static_Boolean_EnumNPublicSealedvaUnCoHeToTaThShPeVoUnique_0(VRCInputManager.EnumNPublicSealedvaUnCoHeToTaThShPeVoUnique.StreamerModeEnabled);
 
         public static bool AxisClicked(string axis, string oculusAxis, ref float previous, float threshold)
         {

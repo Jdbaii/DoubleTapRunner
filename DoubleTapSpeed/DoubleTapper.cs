@@ -36,8 +36,6 @@ namespace DoubleTapRunner
         // Original Settings
         private static float walkSpeed, runSpeed, strafeSpeed;
 
-        private static bool worldAllowed;
-
         private static bool currentlyRunning, grabbedWorldSettings;
 
         private static bool modLoadedCorrectly = true;
@@ -50,7 +48,7 @@ namespace DoubleTapRunner
 
         private bool useAxisValues;
 
-        public override void OnApplicationStart()
+        public override void OnInitializeMelon()
         {
             if (instance != null)
             {
@@ -93,7 +91,6 @@ namespace DoubleTapRunner
             settingsCategory.CreateEntry( nameof(Settings.AxisClickThreshold), activeSettings.AxisClickThreshold, "Axis Click Threshold");
             ApplySettings();
 
-            VRChatUtilityKit.Utilities.VRCUtils.OnEmmWorldCheckCompleted += allowed => worldAllowed = allowed;
 
             try
             {
@@ -117,7 +114,6 @@ namespace DoubleTapRunner
         private static bool LeftRoomPrefix()
         {
             grabbedWorldSettings = false;
-            worldAllowed = false;
             currentlyRunning = false;
             return true;
         }
@@ -150,8 +146,7 @@ namespace DoubleTapRunner
                 }
         #endif
 
-            if (!activeSettings.Enabled
-                || !worldAllowed) return;
+            if (!activeSettings.Enabled) return;
 
             // Grab last used input method
             useAxisValues = Utilities.GetLastUsedInputMethod() switch
@@ -230,7 +225,7 @@ namespace DoubleTapRunner
                 }
             }
         }
-
+      
         private void ApplySettings()
         {
             activeSettings.Enabled = settingsCategory.GetEntry<bool>(nameof(Settings.Enabled)).Value;
@@ -267,7 +262,7 @@ namespace DoubleTapRunner
             var localPlayerApi = VRCPlayer.field_Internal_Static_VRCPlayer_0?.field_Private_VRCPlayerApi_0;
             if (localPlayerApi == null) return;
             
-            if (!worldAllowed || Utilities.GetStreamerMode) currentlyRunning = false;
+            if (Utilities.GetStreamerMode) currentlyRunning = false;
 
             //LocomotionInputController locomotion = Utilities.GetLocalVRCPlayer()?.GetComponent<LocomotionInputController>();
             //if (locomotion == null) return;

@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\..\..\Games\Steam\steamapps\common\VRChat\MelonLoader\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="Accessibility">
       <HintPath>D:\Games\Steam\steamapps\common\VRChat\MelonLoader\Managed\Accessibility.dll</HintPath>
       <Private>False</Private>
